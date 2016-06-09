@@ -1,0 +1,12 @@
+<h1>Temperature Converter</h1>
+
+<%= form_tag temperature_converter_path do %>
+  <%= text_field_tag :temperature, @temperature, {placeholder:"your mother"} %>
+  <%= submit_tag "Convert" %>
+<% end %>
+
+<% if @error %>
+  <%= @error %>
+<% elsif @fahrenheit %>
+  <%= @temperature %>&deg;C is <%= @fahrenheit %>&deg;F.
+<% end %>

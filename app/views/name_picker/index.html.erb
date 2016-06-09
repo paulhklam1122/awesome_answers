@@ -1,0 +1,11 @@
+<h1>Name Picker</h1>
+<div class="form">
+  <%= form_tag name_picker_path do %>
+    <%= text_area_tag :names, @names, {rows: 8, cols:50, placeholder:"enter your names separated by commas"} %>
+    <%= submit_tag "Pick Winner" %>
+  <% end %>
+</div>
+
+<div class="result">
+  <h1>The winner is: <%= @result %></h1>
+</div>

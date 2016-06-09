@@ -1,0 +1,20 @@
+<h1>Bil Splitter</h1>
+
+  <div class="form">
+    <%= form_tag bill_splitter_path do %>
+      <%= label_tag "bill_total" %>
+      <%= text_field_tag :bill_total, @bill_total, {placeholder:"Please enter your bill total"} %>
+      <%= label_tag "tip" %>
+      <%= text_field_tag :tip, @tip, {placeholder:"Percentage"}  %>
+      <%= label_tag "tax" %>
+      <%= text_field_tag :tax, @tax, {placeholder:"Percentage"}  %>
+      <%= label_tag "number_of_people" %>
+      <%= text_field_tag :number_of_people, @number_of_people, {placeholder:"Please enter the number of people in your party"} %>
+      <%= submit_tag "Split" %>
+    <% end %>
+  </div>
+  <div class="result">
+    <% if @result %>
+    <h1>Each person pays <%= @result %></h1>
+    <% end %>
+  </div>
