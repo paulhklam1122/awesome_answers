@@ -20,7 +20,7 @@ class Product < ActiveRecord::Base
   private
 
   def reserved_word
-   if :name =~ "Apple" | :name =~ "Microsoft" | :name =~ "Sony" |:name =~ "Elppa" | :name =~ "Tfosorcim" | :name =~ "Yons"
+   if name && name.downcase.include?("Apple")
      errors.add(:title, "Invalid name")
    end
   end

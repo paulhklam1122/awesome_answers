@@ -1,0 +1,19 @@
+<%# link_to is a helper method that is built-in with Rails  %>
+<div class="container">
+  <%= link_to "Home", root_path %> |
+  <%= link_to("About Us", about_path, {class: "abc", id: "xyz"}) %> |
+  <a href="<%= greet_path({name: "Paul"}) %>">Greet</a> |
+  <a href="<%= greet_path("Mark") %>">Greet Mark</a> |
+  <%= link_to "Cowsay", cowsay_path %> |
+  <%= link_to "Temperature Converter", temperature_converter_path %> |
+  <%= link_to "Bill Splitter", bill_splitter_path %> |
+  <%= link_to "Name Picker", name_picker_path %> |
+  <%= link_to "New Question", new_question_path %> |
+  <%= link_to "All Questions", questions_path %> |
+  <% if user_signed_in? %>
+    Hello <%= current_user.first_name %>
+    <%= link_to "Sign Out", sessions_path, method: :delete %>
+  <% else %>
+    <%= link_to "Sign Up", new_users_path %> |
+    <%= link_to "Sign In", new_sessions_path %>
+  <% end %>
