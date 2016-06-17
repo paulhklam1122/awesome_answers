@@ -1,12 +1,41 @@
 Rails.application.routes.draw do
   # this defines a route that specifies if we get a request that has a GET HTTP verb with '/about' url, use the HomeController with about action (method)
+
+  root "home#index"
   get "/about" => "home#about"
 
   # passing the 'as:' option enables us to have a url/path helper for this route
   #note that helpers are only for the URL portion of the route and have nothing to do with the HTTP Verb.
   # Also, note that a URL helper must be unique
   get "/greet/:name" => "home#greet", as: :greet
-  root "home#index"
+
+  resource :users, only: [:new, :create]
+  resource :sessions, only: [:new, :create] do
+    delete :destroy, on: :collection
+  end
+
+
+  resources :questions do
+    # this will define a route that will be '/questions/search' and it will
+    # point to the questions controller 'search' action in that controller.
+    # on: :collection makes the route not have an 'id' or 'question_id' on it
+    get :search, on: :collection
+    # this will generate a route '/questions/:id/flag' and it will point to
+    # questions controller 'flag' action.
+    # on: :member makes the route include an ':id' in it similar to the 'edit'
+    post :flag, on: :member
+    post :mark_done
+    # will make all the answers routes nested within 'questions' which means all the answers routes will be prepended within
+    # '/questions/:question_id'
+    resources :answers, only: [:create, :destroy]
+  end
+  # get "/questions/new" => "questions#new", as: :new_question
+  # post "/questions" => "questions#create", as: :questions
+  # get "/questions/:id" => "questions#show", as: :question
+  # get "/questions" => "questions#index"
+  # get "/questions/:id/edit" => "questions#edit", as: :edit_question
+  # patch "/questions/:id/" => "questions#update"
+  # delete "/questions/:id" => "questions#destroy"
   # root makes it your home page without adding any url
   get "/cowsay" => "cowsay#index"
   post "/cowsay" => "cowsay#create", as: :cowsay_submit
@@ -29,7 +58,7 @@ Rails.application.routes.draw do
   get "name_picker" => "name_picker#index"
   post "name_picker" => "name_picker#pick"
 
-  get "admin/questions" => "questions#index" 
+  get "admin/questions" => "questions#index"
 
   namespace :admin do
     resources :questions

@@ -7,18 +7,15 @@
   <%= csrf_meta_tags %>
 </head>
   <body>
-    <!-- <a href="/">Home</a> |
-    <a href="/about">About</a> | -->
-    <%# link_to is a helper method that is built-in with Rails  %>
-    <div class="container">
-      <%= link_to "Home", root_path %> |
-      <%= link_to("About Us", about_path, {class: "abc", id: "xyz"}) %> |
-      <a href="<%= greet_path({name: "Paul"}) %>">Greet</a> |
-      <a href="<%= greet_path("Mark") %>">Greet Mark</a> |
-      <%= link_to "Cowsay", cowsay_path %> |
-      <%= link_to "Temperature Converter", temperature_converter_path %> |
-      <%= link_to "Bill Splitter", bill_splitter_path %> |
-      <%= link_to "Name Picker", name_picker_path %>
+    <%= render "/layouts/navbar" %>
+      <hr />
+
+      <% if flash[:notice] %>
+        <div class="flash-notice"><%= flash[:notice] %></div>
+      <% elsif flash[:alert] %>
+        <div class="flash-alert"><%= flash[:alert] %></div>
+      <% end %>
+
     <%= yield %>
     </div>
   </body>
