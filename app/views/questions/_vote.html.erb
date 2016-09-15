@@ -1,0 +1,15 @@
+<div id="votes">
+  <% if question.voted_up_by?(current_user) %>
+    <%= link_to "Undo Vote Up", question_vote_path(question, current_user_vote), method: :delete, remote: true, data: {disable_with: "..."}, class: "vote-icon" %>
+    (<%= question.vote_sum %>)
+    <%= link_to "Vote Down", question_vote_path(question, current_user_vote, {vote: {is_up: false}}), method: :patch, remote: true, data: {disable_with: "..."}, class: "vote-icon" %> |
+  <% elsif question.voted_down_by?(current_user) %>
+    <%= link_to "Vote Up", question_vote_path(question, current_user_vote, {vote:{is_up: true}}), method: :patch, remote: true, data: {disable_with: "..."}, class: "vote-icon" %> |
+    (<%= question.vote_sum %>)
+    <%= link_to "Undo Vote Down", question_vote_path(question, current_user_vote), method: :delete, remote: true, data: {disable_with: "..."}, class: "vote-icon" %>
+  <% else %>
+    <%= link_to "Vote Up", question_votes_path(question, {vote: {is_up: true}}), method: :post, remote: true,   data: {disable_with: "..."}, class: "vote-icon" %>
+    (<%= question.vote_sum %>)
+    <%= link_to "Vote Down", question_votes_path(question, {vote: {is_up: false}}), method: :post, remote: true, data: {disable_with: "..."}, class: "vote-icon" %> |
+  <% end %>
+</div>

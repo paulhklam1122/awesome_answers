@@ -4,9 +4,18 @@ class Question < ActiveRecord::Base
   # the dependent option takes values like 'destroy' and 'nullify'
   # 'destroy' will make Rails automatically delete associated answers before deleting the question.
   # 'nullify' will make Rails turn 'question_id' values of asociated records to 'NULL' before deleting the question.
-  has_many :answers, dependent: :destroy
+
+  attr_accessor :tweet_it
+  
   belongs_to :category
   belongs_to :user
+  has_many :answers, dependent: :destroy
+  has_many :likes, dependent: :destroy
+  has_many :liking_users, through: :likes, source: :user
+  has_many :votes, dependent: :destroy
+  has_many :voting_users, through: :votes, source: :user
+  has_many :taggings, dependent: :destroy
+  has_many :tags, through: :taggings
 
   validates(:title, {presence: {message: "must be present!"}, uniqueness: true})
   validates :body, presence: true, length: {minimum: 7}
@@ -25,8 +34,12 @@ class Question < ActiveRecord::Base
   validate :no_title_in_body
 
   after_initialize :set_defaults
-  before_validation     :cap_title, :squeeze_title_body
+  before_validation :cap_title, :squeeze_title_body
 
+  extend FriendlyId
+  friendly_id :title, use: [:slugged, :finders, :history]
+
+  mount_uploader :image, ImageUploader
   # Scope
   # scope :recent, lambda{|count| where("created_at >?", 3.day.ago).limit(count)}
   #OR
@@ -44,25 +57,56 @@ class Question < ActiveRecord::Base
   def new_first_answers
      answers.order(created_at: :desc)
   end
+
+  def liked_by?(user)
+    # likes.find_by_user_id user
+    likes.exists?(user: user)
+  end
+
+  def like_for(user)
+    likes.find_by_user_id user
+  end
   #Product.where("price BETWEEN 100 AND 300").order(name: :desc).limit(10)
 
   # User.where("first_name != 'john' OR last_name != 'john'")
+  def voted_by?(user)
+    votes.exists?(user: user)
+  end
 
+  def vote_for(user)
+    votes.find_by_user_id user
+  end
 
+  def voted_up_by?(user)
+    voted_by?(user) && vote_for(user).is_up?
+  end
 
-  # def self.updated_after(date)
-  #   where("updated_at > ?", date)
+  def voted_down_by?(user)
+    voted_by?(user) && !vote_for(user).is_up?
+  end
+
+  def up_votes
+    votes.where(is_up: true).count
+  end
+
+  def down_votes
+    votes.where(is_up: false).count
+  end
+
+  def vote_sum
+    up_votes - down_votes
+  end
+
+  # def to_param
+  #   "#{id}-#{title}.parameterize"
   # end
-  # scope :updated_after, lambda{|date| where("updated_at > ?", date)}
 
-  # Product.where("sale_price < price").order(updated_at:, sale_price:).limit(3)
+  # delegate :name, to: :category, prefix: true
+  def category_name
+    category.name
+  end
 
-  # validates :name, presence: true
-  # validates :price, numericality: {greater_than: 0, less_than: 1000}
-
-  # before_destroy :notify_admin # to private method section
-
-  # Destroy runs any callbacks on the model while delete doesn't
+  delegate :first_name, :last_name, to: :user, prefix: true
 
   private
 

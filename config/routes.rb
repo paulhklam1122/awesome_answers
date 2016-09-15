@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
+  resources :votes
   # this defines a route that specifies if we get a request that has a GET HTTP verb with '/about' url, use the HomeController with about action (method)
-
+  match "/delayed_job" => DelayedJobWeb, :anchor => false, via: [:get, :post]
   root "home#index"
   get "/about" => "home#about"
 
@@ -9,13 +10,35 @@ Rails.application.routes.draw do
   # Also, note that a URL helper must be unique
   get "/greet/:name" => "home#greet", as: :greet
 
-  resource :users, only: [:new, :create]
-  resource :sessions, only: [:new, :create] do
+  resources :users, only: [:new, :create]
+
+  get "/auth/twitter", as: :sign_in_with_twitter
+  get "/auth/twitter/callback" => "callbacks#twitter"
+
+  resources :sessions, only: [:new, :create] do
     delete :destroy, on: :collection
   end
 
+  # get "api/v1/questions" => "api/v1/questions#index"
+
+  # this will prepend al the urls for the questions with /api/v1 but it will still point to the questions_controller.rb
+  # scope :api do
+  #   scope :v1 do
+  #     resources :questions, only: [:index, :show]
+  #   end
+  # end
+
+  # this will prepend al the urls for the questions with /api/v1 and it will point to the api/v1/quesitons_controller.rb
+  namespace :api, defaults: {format: :json} do
+    namespace :v1 do
+      resources :questions, only: [:index, :show] do
+        resources :answers, only: [:create]
+      end
+    end
+  end
 
   resources :questions do
+    resources :votes, only: [:create, :update, :destroy]
     # this will define a route that will be '/questions/search' and it will
     # point to the questions controller 'search' action in that controller.
     # on: :collection makes the route not have an 'id' or 'question_id' on it
@@ -28,7 +51,10 @@ Rails.application.routes.draw do
     # will make all the answers routes nested within 'questions' which means all the answers routes will be prepended within
     # '/questions/:question_id'
     resources :answers, only: [:create, :destroy]
+    resources :likes, only: [:create, :destroy]
   end
+
+  resources :likes, only: [:index]
   # get "/questions/new" => "questions#new", as: :new_question
   # post "/questions" => "questions#create", as: :questions
   # get "/questions/:id" => "questions#show", as: :question

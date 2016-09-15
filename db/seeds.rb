@@ -1,36 +1,16 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
-#
-# Examples:
-#
-#   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
-#   Mayor.create(name: 'Emanuel', city: cities.first)
+User.create(first_name: "Paul", last_name: "Lam", email: "paullam007@gmail.com", password: "p", is_admin: true)
 
-# 300.times do
-#   Question.create title: Faker::Company.bs,
-#                     body: Faker::Hipster.paragraph,
-#                     view_count: rand(100)
-# end
-#
-# puts Cowsay.say "Generated 300 questions!"
-#
-# 100.times do
-#   User.create first_name: Faker::Name.first_name,
-#                 last_name: Faker::Name.last_name,
-#                 email: Faker::Internet.email
-# end
+User.create(first_name: "Carey", last_name: "Lau", email: "ccliu2012@gmail.com", password: "t")
 
+User.create(first_name: "Tofu", last_name: "Tofu", email: "tofu@gmail.com", password: "t")
 
-# 300.times do
-#   Product.create name: Faker::Commerce.product_name,
-#                    price: rand(1000),
-#                    sale_price: rand(50)
-# end
+User.create(first_name: "Panda", last_name: "Panda", email: "panda@gmail.com", password: "p")
 
 300.times do
-  q = Question.create title:      Faker::Company.bs,
+  q = Question.create title: Faker::Company.bs,
                       body:       Faker::Hipster.paragraph,
-                      view_count: rand(100)
+                      view_count: rand(100),
+                      user_id: User.all.map(&:id).sample
   5.times { q.answers.create body: Faker::ChuckNorris.fact } if q.persisted?
 end
 
@@ -39,3 +19,7 @@ end
 end
 
 puts Cowsay.say "Generated 300 questions!"
+
+30.times do
+  Tag.create title: Faker::Hacker.adjective
+end

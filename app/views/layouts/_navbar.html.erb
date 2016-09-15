@@ -11,9 +11,11 @@
   <%= link_to "New Question", new_question_path %> |
   <%= link_to "All Questions", questions_path %> |
   <% if user_signed_in? %>
+    <%= link_to "Liked Questions", likes_path %>
     Hello <%= current_user.first_name %>
     <%= link_to "Sign Out", sessions_path, method: :delete %>
   <% else %>
-    <%= link_to "Sign Up", new_users_path %> |
-    <%= link_to "Sign In", new_sessions_path %>
+    <%= link_to "Sign Up", new_user_path %> |
+    <%= link_to "Sign In", new_session_path %> |
+    <%= link_to "Sign In with Twitter", sign_in_with_twitter_path %>
   <% end %>

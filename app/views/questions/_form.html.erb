@@ -5,18 +5,30 @@
 
 if @question has any of it's attributes set, it will populate the corresponding field with that data.%>
 
-<%= @question.errors.full_messages.join(", ") %>
-<%= form_for @question do |f| %>
-  <div>
+<%#= @question.errors.full_messages.join(", ") %>
+<%= simple_form_for @question do |f| %>
+  <!-- <div>
     <%= f.label :title %>
     <%= f.text_field :title %>
-  </div>
-  <div>
+  </div> -->
+  <%= f.input :title %>
+  <!-- <div>
     <%= f.label :body %>
     <%= f.text_area :body %>
-  </div>
-  <div>
-        <%= f.collection_select :category_id, Category.all, :id, :name %>
-  </div>
-  <%= f.submit %>
+  </div> -->
+  <%= f.input :body %>
+  <%= f.input :image %>
+  <!-- <div> -->
+  <%= f.association :tags, as: :check_boxes %>
+    <!-- <%= f.label :tag_ids %>
+    <%#= f.collection_check_boxes(:tag_ids, Tag.order(:title), :id, :title) %> -->
+  <!-- </div> -->
+  <!-- <div> -->
+  <%= f.association :category, include_blank: false %>
+        <%#= f.collection_select :category_id, Category.all, :id, :name %>
+  <% if current_user.using_twitter? && !@question.persisted? %>
+    <%= f.input :tweet_it, as: :boolean %>
+  <% end %>
+  <%= f.button :submit, class: "btn-primary" %>
+  <%#= f.submit %>
 <% end %>
